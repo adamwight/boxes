@@ -26,60 +26,19 @@ def gui_main(stdscr):
 
     info = d.info(index=index)
     stdscr.clear()
-    info += """
-    (>) bigger -> {big}
-    (<) smaller -> {small}
-    (r)ebuild as {image}
-    (p)uppet refresh
-    (1) turn on
-    (0) turn off""".format(big=SIZE_BIGGER, small=SIZE_MINIMUM, image=BASE_IMAGE)
+    cmd_menu = [c.get_description() for c in command.node_commands]
+    info += "\n" + "\n".join(cmd_menu)
     w.print_block(info)
 
     # TODO: add and provision box
 
     action = w.prompt("Operation? ")
 
-    if action == '>':
-        out = d.resize(box, SIZE_BIGGER)
-        w.print_block("Success: {}".format(out))
+    cmd_key_lookup = {c.get_key(): c for c in command.node_commands}
 
-    if action == '<':
-        out = d.resize(box, SIZE_MINIMUM)
-        w.print_block("Success: {}".format(out))
-
-    if action == 'r':
-        confirm = w.prompt("Rebuild box {}? (y/n) ".format(box.name))
-        assert confirm == 'y'
-        out = d.rebuild(box)
-        w.print_block("Success: {}".format(out))
-
-    if action == 'p':
-        stdscr.clear()
-        w.print_block("Refreshing puppet on " + box['name'])
-        try:
-            subprocess.check_output("./refresh_puppet.sh -l {name}".format(name=box['name']).split())
-        except subprocess.CalledProcessError:
-            # TODO: append text / to log
-            w.print_block("Failed to jerk the puppet!")
-            pass
-        path = "/var/lib/puppet/state/last_run_report.yaml"
-        local = "/tmp/last_run_report.yaml"
-        subprocess.check_output("scp root@{name}:{path} {local}".format(name=box['name'], path=path, local=local).split())
-        stdscr.clear()
-        contents = open(local, "r").read()
-        contents = re.sub(r'\s*!\S+', '', contents, flags=re.M)
-        report = yaml.safe_load(contents)
-        statuses = report['metrics']['resources']['values']
-        statuses = [r[1:] for r in statuses]
-        w.print_block(tabulate.tabulate(statuses))
-
-    if action == '1':
-        out = d.power_on(box)
-        w.print_block("Success: {}".format(out))
-
-    if action == '0':
-        out = d.power_off(box)
-        w.print_block("Success: {}".format(out))
+    if action in cmd_key_lookup:
+        out = cmd_key_lookup[action].run(d, box)
+        w.print_block(out)
 
     w.prompt("Any key to exit.")
 

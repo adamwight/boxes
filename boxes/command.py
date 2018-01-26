@@ -19,6 +19,9 @@ class NodeCommand(object):
     def run(self, cloud, box):
         raise NotImplementedError()
 
+    def needs_confirm(self):
+        return False
+
 
 def add_node_command(cls):
     node_commands.append(cls())
