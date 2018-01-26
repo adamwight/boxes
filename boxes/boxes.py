@@ -6,6 +6,7 @@ import subprocess
 import tabulate
 import yaml
 
+from . import command
 from . import config
 from .cloud import Cloud, SIZE_BIGGER, SIZE_MINIMUM, BASE_IMAGE
 from .ui import ui
@@ -85,4 +86,5 @@ def gui_main(stdscr):
 
 def main():
     config.load()
+    command.load_commands()
     curses.wrapper(gui_main)
