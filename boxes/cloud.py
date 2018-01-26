@@ -1,9 +1,5 @@
-import json
 from libcloud.compute.types import NodeState
-from libcloud.compute.types import Provider
 from libcloud.compute.providers import get_driver
-import platform
-import subprocess
 import tabulate
 
 from . import config

@@ -1,14 +1,10 @@
 #!/usr/bin/env python
 
 import curses
-import re
-import subprocess
-import tabulate
-import yaml
 
 from . import command
 from . import config
-from .cloud import Cloud, SIZE_BIGGER, SIZE_MINIMUM, BASE_IMAGE
+from .cloud import Cloud
 from .ui import ui
 
 

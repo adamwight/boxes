@@ -1,3 +1,8 @@
+import re
+import subprocess
+import tabulate
+import yaml
+
 from boxes import command
 
 
@@ -13,18 +18,25 @@ class RefreshPupppetCommand(command.NodeCommand):
 
     def run(self, cloud, box):
         # TODO:
-        #stdscr.clear()
-        #w.print_block("Refreshing puppet on " + box['name'])
+        # stdscr.clear()
+        # w.print_block("Refreshing puppet on " + box['name'])
         try:
-            subprocess.check_output("./refresh_puppet.sh -l {}".format(box.name).split())
+            subprocess.check_output(
+                "./refresh_puppet.sh -l {}".format(box.name).split())
         except subprocess.CalledProcessError:
             # TODO: append text / to log
             return "Failed to jerk the puppet!"
 
         remote_path = "/var/lib/puppet/state/last_run_report.yaml"
         local_path = "/tmp/last_run_report.yaml"
-        subprocess.check_output("scp root@{name}:{path} {local}".format(name=box['name'], path=remote_path, local=local_path).split())
-        stdscr.clear()
+        subprocess.check_output(
+            "scp root@{name}:{path} {local}".format(
+                name=box['name'],
+                path=remote_path,
+                local=local_path
+            ).split())
+        # TODO
+        # stdscr.clear()
         with open(local_path, "r") as f:
             contents = f.read()
             contents = re.sub(r'\s*!\S+', '', contents, flags=re.M)
