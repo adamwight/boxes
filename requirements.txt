@@ -1,2 +1,4 @@
-tabulate >= 0.8.2, < 0.8.999
-PyYAML >= 3.12, < 3.999
+apache-libcloud
+tabulate >= 0.7.7, < 0.8.999
+PyYAML >= 3.11, < 3.999
+yamlconfig

@@ -1,72 +1,82 @@
 import json
+from libcloud.compute.types import NodeState
+from libcloud.compute.types import Provider
+from libcloud.compute.providers import get_driver
 import platform
 import subprocess
 import tabulate
 
+from . import config
+
 BASE_IMAGE = "debian-9-x64"
-SIZE_MINIMUM = "512mb"
+SIZE_MINIMUM = "1gb"
 SIZE_BIGGER = "2gb"
 
 
 class doctl(object):
-	def __init__(self):
-		pass
+    def __init__(self):
+        cls = get_driver(Provider.DIGITAL_OCEAN)
+        self.driver = cls(config.config["api_token"], api_version="v2")
 
-	@staticmethod
-	def run_command(args):
-		if platform.system() == 'Darwin':
-			cmd = "/usr/local/bin/doctl"
-		else:
-			cmd = "snap run doctl"
+    def fetch(self):
+        self.list = self.driver.list_nodes()
 
-		cmd += " " + args
-		out = subprocess.check_output(cmd.split(), stderr=subprocess.STDOUT)
+    def list_all(self):
+        data = []
+        for i, box in enumerate(self.list):
+            # FIXME: DO driver should extract size info out of extra.
+            data.append([
+                i,
+                box.name,
+                box.extra["memory"],
+                box.extra["vcpus"],
+                box.state,
+            ])
 
-		return out
+        table = tabulate.tabulate(data, headers=[
+            '',
+            'name',
+            'memory',
+            'cpus',
+            'status',
+        ])
+        return table
 
-	def fetch(self):
-		out = doctl.run_command("compute droplet list -o json")
-		self.list = json.loads(out)
+    def info(self, index=None):
+        if index is None:
+            return
 
-	def list_all(self):
-		data = []
-		for i, box in enumerate(self.list):
-			data.append([i, box['name'], box['memory'], box['vcpus'], box['status']])
+        box = self.list[index]
 
-		table = tabulate.tabulate(data, headers=['', 'name', 'memory', 'cpus', 'status'])
-		return table
+        nets = box.extra['networks']['v4']
+        ip = None
+        for net in nets:
+            if net['type'] == 'public':
+                ip = net['ip_address']
+                break
 
-	def info(self, index=None):
-		if index:
-			box = self.list[index]
+        info = [
+            ['name', box.name],
+            ['IPv4', ip],
+            ['id', box.id],
+            ['size', box.extra['size_slug']],
+        ]
+        return tabulate.tabulate(info)
 
-		nets = box['networks']['v4']
-		ip = None
-		for net in nets:
-			if net['type'] == 'public':
-				ip = net['ip_address']
-				break
+    # FIXME: libcloud doesn't support resize
+    #@staticmethod
+    #def resize(id, size):
+    #    return doctl.run_command("compute droplet-action resize {id} --size {size} --trace -v".format(id=id, size=size))
 
-		info = [
-			['name', box['name']],
-			['IPv4', ip],
-			['id', box['id']],
-			['size', box['size']['slug']],
-		]
-		return tabulate.tabulate(info)
+    # FIXME: libcloud doesn't support rebuild
+    #@staticmethod
+    #def rebuild(id):
+    #    return doctl.run_command("compute droplet-action rebuild {id} --wait --image {image}".format(id=id, image=BASE_IMAGE))
 
-	@staticmethod
-	def resize(id, size):
-		return doctl.run_command("compute droplet-action resize {id} --size {size} --trace -v".format(id=id, size=size))
+    def power_on(self, box):
+        assert box.state == NodeState.STOPPED
+        return self.driver.ex_power_on_node(box)
 
-	@staticmethod
-	def rebuild(id):
-		return doctl.run_command("compute droplet-action rebuild {id} --wait --image {image}".format(id=id, image=BASE_IMAGE))
-
-	@staticmethod
-	def power_on(id):
-		return doctl.run_command("compute droplet-action power-on {id}".format(id=id))
-
-	@staticmethod
-	def power_off(id):
-		return doctl.run_command("compute droplet-action power-off {id}".format(id=id))
+    def power_off(self, box):
+        assert box.state == NodeState.RUNNING
+        return self.driver.ex_shutdown_node(box)
