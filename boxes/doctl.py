@@ -63,15 +63,15 @@ class doctl(object):
         ]
         return tabulate.tabulate(info)
 
-    # FIXME: libcloud doesn't support resize
-    #@staticmethod
-    #def resize(id, size):
-    #    return doctl.run_command("compute droplet-action resize {id} --size {size} --trace -v".format(id=id, size=size))
+    def resize(self, box, size):
+        # Requires XXX PR
+        assert box.extra['size_slug'] != size
+        assert box.state == NodeState.STOPPED
+        return self.driver.ex_resize_node(box, size)
 
-    # FIXME: libcloud doesn't support rebuild
-    #@staticmethod
-    #def rebuild(id):
-    #    return doctl.run_command("compute droplet-action rebuild {id} --wait --image {image}".format(id=id, image=BASE_IMAGE))
+    def rebuild(self, box):
+        # Requires XXX PR
+        return self.driver.ex_rebuild_node(box)
 
     def power_on(self, box):
         assert box.state == NodeState.STOPPED

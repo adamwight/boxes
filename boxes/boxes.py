@@ -39,22 +39,18 @@ def gui_main(stdscr):
     action = w.prompt("Operation? ")
 
     if action == '>':
-        assert box['size']['slug'] == SIZE_MINIMUM
-        assert box['status'] == 'off'
-        out = doctl.resize(id=box['id'], size=SIZE_BIGGER)
-        w.print_block(out)
+        out = d.resize(box, SIZE_BIGGER)
+        w.print_block("Success: {}".format(out))
 
     if action == '<':
-        assert d.list[index]['size']['slug'] != SIZE_MINIMUM
-        assert box['status'] == 'off'
-        out = doctl.resize(id=box['id'], size=SIZE_MINIMUM)
-        w.print_block(out)
+        out = d.resize(box, SIZE_MINIMUM)
+        w.print_block("Success: {}".format(out))
 
     if action == 'r':
-        confirm = w.prompt("Rebuild box {name}? (y/n) ".format(name=box['name']))
+        confirm = w.prompt("Rebuild box {}? (y/n) ".format(box.name))
         assert confirm == 'y'
-        out = doctl.rebuild(id=box['id'])
-        w.print_block(out)
+        out = d.rebuild(box)
+        w.print_block("Success: {}".format(out))
 
     if action == 'p':
         stdscr.clear()
