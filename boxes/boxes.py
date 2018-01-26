@@ -7,14 +7,14 @@ import tabulate
 import yaml
 
 from . import config
-from .doctl import doctl, SIZE_BIGGER, SIZE_MINIMUM, BASE_IMAGE
+from .cloud import Cloud, SIZE_BIGGER, SIZE_MINIMUM, BASE_IMAGE
 from .ui import ui
 
 
 def gui_main(stdscr):
     w = ui(stdscr)
 
-    d = doctl()
+    d = Cloud()
     d.fetch()
     table = d.list_all()
     w.print_block(table)

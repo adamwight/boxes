@@ -13,9 +13,11 @@ SIZE_MINIMUM = "1gb"
 SIZE_BIGGER = "2gb"
 
 
-class doctl(object):
+class Cloud(object):
     def __init__(self):
-        cls = get_driver(Provider.DIGITAL_OCEAN)
+        # TODO: We're actually coupled to DigitalOcean v2, so allowing
+        # configurability is a ruse.
+        cls = get_driver(config.config["cloud_driver"])
         self.driver = cls(config.config["api_token"], api_version="v2")
 
     def fetch(self):
