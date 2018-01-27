@@ -4,6 +4,7 @@ Framework for extensible actions
 
 import importlib
 import os.path
+import re
 import sys
 
 from boxes import config
@@ -44,12 +45,19 @@ def load_commands():
 
 
 def load_commands_from_dir(path):
-    if not os.path.exists(path):
-        raise RuntimeError("Bad custom command path: {}".format(path))
-
+    modules = get_scripts_in_dir(path)
     sys.path.append(path)
 
-    for module in os.listdir(path):
-        if module == '__init__.py' or module[-3:] != '.py':
+    for module in modules:
+        importlib.import_module(module)
+
+
+def get_scripts_in_dir(path):
+    assert os.path.exists(path)
+
+    for file_name in os.listdir(path):
+        if re.match(r'^[_.]', file_name):
             continue
-        importlib.import_module(module[:-3])
+
+        module = file_name[:-3]
+        yield module
