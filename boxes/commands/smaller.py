@@ -11,7 +11,7 @@ class SmallerCommand(command.NodeCommand):
 
     def run(self, cloud, box):
         out = cloud.resize(box, SIZE_MINIMUM)
-        return "Success: {}".format(out)
+        return "Resize {} smaller: {}".format(box.name, out)
 
 
 command.add_node_command(SmallerCommand)

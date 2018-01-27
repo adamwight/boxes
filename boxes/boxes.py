@@ -38,7 +38,7 @@ def gui_box(curses, cloud, box):
         raise RuntimeError("Unknown command key '{}'".format(action))
 
     out = cmd.run(cloud, box)
-    curses.print_block(out)
+    curses.log_action(out)
 
     curses.prompt("Any key to exit.")
 

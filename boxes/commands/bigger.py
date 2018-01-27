@@ -11,7 +11,7 @@ class BiggerCommand(command.NodeCommand):
 
     def run(self, cloud, box):
         out = cloud.resize(box, SIZE_BIGGER)
-        return "Success: {}".format(out)
+        return "Resize {} bigger: {}".format(box.name, out)
 
 
 command.add_node_command(BiggerCommand)
