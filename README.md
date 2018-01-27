@@ -27,3 +27,4 @@ TODO
 execution.
 * Full log window and write to log file.
 * Customization hooks for stuff like `refresh_puppet.sh`
+* Rebuild and resize are pending merge of https://github.com/apache/libcloud/pull/1169
