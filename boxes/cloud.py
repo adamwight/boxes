@@ -40,12 +40,7 @@ class Cloud(object):
         ])
         return table
 
-    def info(self, index=None):
-        if index is None:
-            return
-
-        box = self.list[index]
-
+    def info(self, box):
         nets = box.extra['networks']['v4']
         ip = None
         for net in nets:

@@ -3,6 +3,9 @@ class ui(object):
         self.screen = screen
         self.screen.border(0)
 
+    def clear(self):
+        self.screen.clear()
+
     def print_block(self, text):
         y = 4
         for line in text.split('\n'):

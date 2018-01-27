@@ -9,34 +9,51 @@ from .ui import ui
 
 
 def gui_main(stdscr):
-    w = ui(stdscr)
+    curses = ui(stdscr)
 
-    d = Cloud()
-    d.fetch()
-    table = d.list_all()
-    w.print_block(table)
+    cloud = Cloud()
+    cloud.fetch()
+    table = cloud.list_all()
+    curses.print_block(table)
 
     # TODO: arrow/j/k selection, <ret> to open box
-    index = int(w.prompt("Choose box: "))
-    box = d.list[index]
+    index = int(curses.prompt("Choose box: "))
+    box = cloud.list[index]
 
-    info = d.info(index=index)
-    stdscr.clear()
-    cmd_menu = [c.get_description() for c in command.node_commands]
+    gui_box(curses, cloud, box)
+
+
+def gui_box(curses, cloud, box):
+    info = cloud.info(box)
+    curses.clear()
+    cmd_menu = get_all_commands()
     info += "\n" + "\n".join(cmd_menu)
-    w.print_block(info)
+    curses.print_block(info)
 
-    # TODO: add and provision box
+    action = curses.prompt("Operation? ")
 
-    action = w.prompt("Operation? ")
+    cmd = get_command_for_key(action)
 
-    cmd_key_lookup = {c.get_key(): c for c in command.node_commands}
+    if cmd is None:
+        raise RuntimeError("Unknown command key '{}'".format(action))
 
-    if action in cmd_key_lookup:
-        out = cmd_key_lookup[action].run(d, box)
-        w.print_block(out)
+    out = cmd.run(cloud, box)
+    curses.print_block(out)
 
-    w.prompt("Any key to exit.")
+    curses.prompt("Any key to exit.")
+
+
+def get_all_commands():
+    return [c.get_description() for c in command.node_commands]
+
+
+def get_command_for_key(key):
+    lookup = {c.get_key(): c for c in command.node_commands}
+
+    if key in lookup:
+        return lookup[key]
+
+    return None
 
 
 def main():
