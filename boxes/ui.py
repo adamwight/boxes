@@ -1,4 +1,4 @@
-class ui(object):
+class Ui(object):
     def __init__(self, screen):
         self.screen = screen
         self.screen.border(0)

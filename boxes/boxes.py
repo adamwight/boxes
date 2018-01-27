@@ -5,42 +5,42 @@ import curses
 from . import command
 from . import config
 from .cloud import Cloud
-from .ui import ui
+from .ui import Ui
 
 
 def gui_main(stdscr):
-    curses = ui(stdscr)
+    ui = Ui(stdscr)
 
     cloud = Cloud()
     cloud.fetch()
     table = cloud.list_all()
-    curses.print_block(table)
+    ui.print_block(table)
 
     # TODO: arrow/j/k selection, <ret> to open box
-    index = int(curses.prompt("Choose box: "))
+    index = int(ui.prompt("Choose box: "))
     box = cloud.list[index]
 
-    gui_box(curses, cloud, box)
+    gui_box(ui, cloud, box)
 
 
-def gui_box(curses, cloud, box):
+def gui_box(ui, cloud, box):
     info = cloud.info(box)
-    curses.clear()
+    ui.clear()
     cmd_menu = get_all_commands()
     info += "\n" + "\n".join(cmd_menu)
-    curses.print_block(info)
+    ui.print_block(info)
 
-    action = curses.prompt("Operation? ")
+    action = ui.prompt("Operation? ")
 
     cmd = get_command_for_key(action)
 
     if cmd is None:
         raise RuntimeError("Unknown command key '{}'".format(action))
 
-    out = cmd.run(cloud, box)
-    curses.log_action(out)
+    out = cmd.run(cloud, box, ui)
+    ui.log_action(out)
 
-    curses.prompt("Any key to exit.")
+    ui.prompt("Any key to exit.")
 
 
 def get_all_commands():
