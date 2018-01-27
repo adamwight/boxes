@@ -9,7 +9,7 @@ class SmallerCommand(command.NodeCommand):
     def get_description(self):
         return "(<) smaller -> {}".format(SIZE_MINIMUM)
 
-    def run(self, cloud, box):
+    def run(self, cloud, box, ui):
         out = cloud.resize(box, SIZE_MINIMUM)
         return "Resize {} smaller: {}".format(box.name, out)
 

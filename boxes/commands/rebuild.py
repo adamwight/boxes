@@ -8,7 +8,7 @@ class RebuildCommand(command.NodeCommand):
     def get_description(self):
         return "(r)ebuild"
 
-    def run(self, cloud, box):
+    def run(self, cloud, box, ui):
         out = cloud.rebuild(box)
         return "Success: {}".format(out)
 

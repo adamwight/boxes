@@ -9,7 +9,7 @@ class BiggerCommand(command.NodeCommand):
     def get_description(self):
         return "(>) bigger -> {}".format(SIZE_BIGGER)
 
-    def run(self, cloud, box):
+    def run(self, cloud, box, ui):
         out = cloud.resize(box, SIZE_BIGGER)
         return "Resize {} bigger: {}".format(box.name, out)
 
