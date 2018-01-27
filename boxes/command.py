@@ -46,7 +46,9 @@ def load_commands():
 
 def load_commands_from_dir(path):
     modules = get_scripts_in_dir(path)
-    sys.path.append(path)
+    # FIXME: Sketchy move to take precedence over global packages.  Better if
+    # we don't touch the path and import by path.
+    sys.path.insert(0, path)
 
     for module in modules:
         importlib.import_module(module)
