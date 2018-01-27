@@ -58,14 +58,15 @@ class Cloud(object):
         ]
         return tabulate.tabulate(info)
 
-    def resize(self, box, size):
-        # Requires XXX PR
-        assert box.extra['size_slug'] != size
+    def resize(self, box, size_slug):
+        # Requires https://github.com/apache/libcloud/pull/1169
+        assert box.extra['size_slug'] != size_slug
         assert box.state == NodeState.STOPPED
+        size = self._lookup_size(size_slug)
         return self.driver.ex_resize_node(box, size)
 
     def rebuild(self, box):
-        # Requires XXX PR
+        # Requires https://github.com/apache/libcloud/pull/1169
         return self.driver.ex_rebuild_node(box)
 
     def power_on(self, box):
@@ -75,3 +76,10 @@ class Cloud(object):
     def power_off(self, box):
         assert box.state == NodeState.RUNNING
         return self.driver.ex_shutdown_node(box)
+
+    def _lookup_size(self, size_slug):
+        sizes = self.driver.list_sizes()
+        for size in sizes:
+            if size.name == size_slug:
+                return size
+        raise KeyError("Size not found: {}".format(size_slug))
