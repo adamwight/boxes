@@ -6,6 +6,8 @@ import importlib
 import os.path
 import sys
 
+from boxes import config
+
 node_commands = []
 
 
@@ -29,10 +31,25 @@ def add_node_command(cls):
 
 def load_commands():
     # TODO: also search configured third-party dirs
-    commands_dir = os.path.dirname(__file__) + "/commands"
-    sys.path.append(commands_dir)
+    command_dirs = [
+        # builtin_commands_dir
+        os.path.dirname(__file__) + "/commands",
+    ]
+    if 'custom_command_dirs' in config.config:
+        custom_command_dirs = config.config['custom_command_dirs']
+        command_dirs.extend(custom_command_dirs)
 
-    for module in os.listdir(commands_dir):
+    for path in command_dirs:
+        load_commands_from_dir(path)
+
+
+def load_commands_from_dir(path):
+    if not os.path.exists(path):
+        raise RuntimeError("Bad custom command path: {}".format(path))
+
+    sys.path.append(path)
+
+    for module in os.listdir(path):
         if module == '__init__.py' or module[-3:] != '.py':
             continue
         importlib.import_module(module[:-3])

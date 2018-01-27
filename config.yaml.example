@@ -1,2 +1,11 @@
+# Currently, only "digitalocean" is supported.
 cloud_driver: digitalocean
+
+# Replace this value with your DigitalOcean personal access token
+# see https://cloud.digitalocean.com/settings/applications
 api_token: abcdef0012345678123456781234567812345678123456781234567812345678
+
+# If you want to write your own commands, specify the module directory.
+# See boxes/commands for examples of how to write a command.
+# custom_command_dirs:
+#     - /home/reality/boxes_commands
