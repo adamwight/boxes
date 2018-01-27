@@ -10,16 +10,35 @@ import sys
 from boxes import config
 
 node_commands = []
+cloud_commands = []
 
 
 class NodeCommand(object):
+    """Interface for running a command on a single node"""
+
     def get_key(self):
         raise NotImplementedError()
 
     def get_description(self):
         raise NotImplementedError()
 
-    def run(self, cloud, box):
+    def run(self, cloud, box, ui):
+        raise NotImplementedError()
+
+    def needs_confirm(self):
+        return False
+
+
+class CloudCommand(object):
+    """Interface for running a command on all nodes"""
+
+    def get_key(self):
+        raise NotImplementedError()
+
+    def get_description(self):
+        raise NotImplementedError()
+
+    def run(self, cloud, ui):
         raise NotImplementedError()
 
     def needs_confirm(self):
@@ -28,6 +47,10 @@ class NodeCommand(object):
 
 def add_node_command(cls):
     node_commands.append(cls())
+
+
+def add_cloud_command(cls):
+    cloud_commands.append(cls())
 
 
 def load_commands():

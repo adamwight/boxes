@@ -49,8 +49,10 @@ def scan_playbooks():
     if not playbooks:
         return
 
-    # TODO: Option to make the playbooks top-level commands.
+    # TODO: Is is possible to identify node vs cloud commands?  We'd have to
+    # get into parsing hosts.yaml
     command.add_node_command(AnsibleCommand)
+    command.add_cloud_command(AnsibleCommand)
 
 
 scan_playbooks()

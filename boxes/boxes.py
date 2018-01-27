@@ -14,6 +14,7 @@ def gui_main(stdscr):
     cloud = Cloud()
     cloud.fetch()
     table = cloud.list_all()
+    # TODO: menu entry for (*) cloud commands
     ui.print_block(table)
 
     # TODO: arrow/j/k selection, <ret> to open box
