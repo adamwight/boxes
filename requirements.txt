@@ -1,4 +1,4 @@
-apache-libcloud
+apache-libcloud >= 2.2.2, < 2.2.999
 tabulate >= 0.7.7, < 0.8.999
 PyYAML >= 3.11, < 3.999
-yamlconfig
+yamlconfig >= 0.3.1, < 0.3.999
