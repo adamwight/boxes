@@ -1,5 +1,6 @@
 from libcloud.compute.types import NodeState
 from libcloud.compute.providers import get_driver
+import operator
 import tabulate
 
 from . import config
@@ -18,6 +19,7 @@ class Cloud(object):
 
     def fetch(self):
         self.list = self.driver.list_nodes()
+        self.list.sort(key=operator.attrgetter("name"))
 
     def list_all(self):
         data = []
