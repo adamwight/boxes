@@ -43,7 +43,7 @@ def scan_playbooks():
     if not os.path.exists(path):
         return
 
-    for file_path in glob.glob(path + "/*.yaml"):
+    for file_path in sorted(glob.glob(path + "/*.yaml")):
         playbooks.append(file_path)
 
     if not playbooks:

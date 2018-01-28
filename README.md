@@ -38,3 +38,4 @@ escape key.
 * Recently used hotlist.
 * First check for config in CWD/.boxes.yaml, ~/.boxes.yaml, maybe cascade
 between each.
+* Realtime command output
