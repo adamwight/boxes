@@ -1,6 +1,7 @@
 from boxes import command
 
 
+@command.node_command
 class RebuildCommand(command.NodeCommand):
     def get_key(self):
         return "r"
@@ -14,6 +15,3 @@ class RebuildCommand(command.NodeCommand):
 
     def needs_confirm(self):
         return True
-
-
-command.add_node_command(RebuildCommand)

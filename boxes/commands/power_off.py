@@ -1,6 +1,7 @@
 from boxes import command
 
 
+@command.node_command
 class PowerOffCommand(command.NodeCommand):
     def get_key(self):
         return "0"
@@ -11,6 +12,3 @@ class PowerOffCommand(command.NodeCommand):
     def run(self, cloud, box, ui):
         out = cloud.power_off(box)
         return "Success: {}".format(out)
-
-
-command.add_node_command(PowerOffCommand)

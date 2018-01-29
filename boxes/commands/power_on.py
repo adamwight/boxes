@@ -1,6 +1,7 @@
 from boxes import command
 
 
+@command.node_command
 class PowerOnCommand(command.NodeCommand):
     def get_key(self):
         return "1"
@@ -11,6 +12,3 @@ class PowerOnCommand(command.NodeCommand):
     def run(self, cloud, box, ui):
         out = cloud.power_on(box)
         return "Success: {}".format(out)
-
-
-command.add_node_command(PowerOnCommand)

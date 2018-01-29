@@ -2,6 +2,7 @@ from boxes.cloud import SIZE_BIGGER
 from boxes import command
 
 
+@command.node_command
 class BiggerCommand(command.NodeCommand):
     def get_key(self):
         return ">"
@@ -12,6 +13,3 @@ class BiggerCommand(command.NodeCommand):
     def run(self, cloud, box, ui):
         out = cloud.resize(box, SIZE_BIGGER)
         return "Resize {} bigger: {}".format(box.name, out)
-
-
-command.add_node_command(BiggerCommand)

@@ -49,6 +49,12 @@ def add_node_command(cls):
     node_commands.append(cls())
 
 
+def node_command(cls):
+    '''Class decorator to register a command'''
+    add_node_command(cls)
+    return cls
+
+
 def add_cloud_command(cls):
     cloud_commands.append(cls())
 
