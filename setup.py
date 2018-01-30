@@ -13,7 +13,7 @@ def requirements(fname):
 
 setup(
     name="boxes",
-    version="0.1",
+    version="0.2",
     packages=["boxes"],
     author="Adam Wight",
     author_email="adamw@ludd.net",
